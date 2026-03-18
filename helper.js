@@ -11,7 +11,16 @@ function getIndexById(id) {
     return envelopes.findIndex(envelope => envelope.id === id)|| -1;
 }
 
+function updateBudget(id, amount) {
+    const envelope = getEnvelopeById(id);
+    if (envelope) {
+        envelope.budget -= amount;
+    }
+}
+
+
 module.exports = {
     getEnvelopeById,
-    getIndexById
+    getIndexById,
+    updateBudget
 };
