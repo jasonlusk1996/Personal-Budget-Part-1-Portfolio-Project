@@ -36,5 +36,20 @@ app.delete('/envelopes/:id', (req, res) => {
     res.status(204).send('Envelope deleted successfully');
 });
 
+app.post('/envelopes/:id/withdraw', (req, res) => {
+    const id = parseInt(req.params.id);
+    const { amount } = req.body || {};
+
+    if (!helper.getEnvelopeById(id)) {
+        return res.status(404).send('Envelope not found');
+    }
+
+    if (amount <= 0) {
+        return res.status(400).send('Invalid amount');
+    }
+
+    helper.updateBudget(id, amount);
+    res.send('Withdrawal successful');
+});
 
 module.exports = app;
