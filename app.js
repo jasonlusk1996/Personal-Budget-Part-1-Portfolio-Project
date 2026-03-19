@@ -3,12 +3,14 @@ const app = express();
 const envelopes = require('./envelopes.js');
 const helper = require('./helper.js');
 app.use(express.json());
+appRouter = express.Router();
+app.use('/envelopes', appRouter);
 
 app.get('/envelopes', (req, res) => {
     res.send(envelopes);
 });
 
-app.post('/envelopes', (req, res) => {
+appRouter.post('/', (req, res) => {
     const { name, budget } = req.body || {};
     if(!name || !budget) {
         return res.status(400).send('Name and budget are required');
@@ -17,7 +19,7 @@ app.post('/envelopes', (req, res) => {
     res.status(201).send('Envelope created successfully');
 });
 
-app.put('/envelopes/even', (req, res) => {
+appRouter.put('/even', (req, res) => {
     const { amount } = req.body || {};
     if (amount <= 0) {
         return res.status(400).send('Invalid amount');
@@ -26,7 +28,7 @@ app.put('/envelopes/even', (req, res) => {
     res.send('All budgets updated successfully');
 });
 
-app.post('/envelopes/transfer/:from/:to', (req, res) => {
+appRouter.post('/transfer/:from/:to', (req, res) => {
     const fromId= parseInt(req.params.from);
     const toId = parseInt(req.params.to);
     const { amount } = req.body || {};
@@ -43,7 +45,7 @@ app.post('/envelopes/transfer/:from/:to', (req, res) => {
     res.send('Transfer successful');
 });
 
-app.get('/envelopes/:id', (req, res) => {
+appRouter.get('/:id', (req, res) => {
     const id = parseInt(req.params.id);
     const envelope = helper.getEnvelopeById(id);
     if (!envelope) {
@@ -52,7 +54,7 @@ app.get('/envelopes/:id', (req, res) => {
     res.send(envelope);
 });
 
-app.delete('/envelopes/:id', (req, res) => {
+appRouter.delete('/:id', (req, res) => {
     const id = parseInt(req.params.id);
     const index = helper.getIndexById(id);
     if (index === -1) {
@@ -62,7 +64,7 @@ app.delete('/envelopes/:id', (req, res) => {
     res.status(204).send('Envelope deleted successfully');
 });
 
-app.put('/envelopes/:id', (req, res) => {
+appRouter.put('/:id', (req, res) => {
     const id = parseInt(req.params.id);
     const { amount } = req.body || {};
     if (!helper.getEnvelopeById(id)) {
@@ -76,7 +78,7 @@ app.put('/envelopes/:id', (req, res) => {
     res.send('Budget updated successfully');
 });
 
-app.post('/envelopes/:id/withdraw', (req, res) => {
+appRouter.post('/:id/withdraw', (req, res) => {
     const id = parseInt(req.params.id);
     const { amount } = req.body || {};
 
