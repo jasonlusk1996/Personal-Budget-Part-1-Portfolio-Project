@@ -22,8 +22,8 @@ function swapBudget(id1, id2, amount) {
     const envelope1 = getEnvelopeById(id1);
     const envelope2 = getEnvelopeById(id2);
     if (envelope1 && envelope2) {
-        envelope1.budget -= amount;
-        envelope2.budget += amount;
+        envelope1.budget -= Number(amount);
+        envelope2.budget += Number(amount);
     }
 }
 
