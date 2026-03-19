@@ -17,39 +17,13 @@ app.post('/envelopes', (req, res) => {
     res.status(201).send('Envelope created successfully');
 });
 
-app.get('/envelopes/:id', (req, res) => {
-    const id = parseInt(req.params.id);
-    const envelope = helper.getEnvelopeById(id);
-    if (!envelope) {
-        return res.status(404).send('Envelope not found');
-    }
-    res.send(envelope);
-});
-
-app.delete('/envelopes/:id', (req, res) => {
-    const id = parseInt(req.params.id);
-    const index = helper.getIndexById(id);
-    if (index === -1) {
-        return res.status(404).send('Envelope not found');
-    }
-    envelopes.splice(index, 1);
-    res.status(204).send('Envelope deleted successfully');
-});
-
-app.post('/envelopes/:id/withdraw', (req, res) => {
-    const id = parseInt(req.params.id);
+app.put('/envelopes/even', (req, res) => {
     const { amount } = req.body || {};
-
-    if (!helper.getEnvelopeById(id)) {
-        return res.status(404).send('Envelope not found');
-    }
-
     if (amount <= 0) {
         return res.status(400).send('Invalid amount');
     }
-
-    helper.updateBudget(id, amount);
-    res.send('Withdrawal successful');
+    helper.evenBudget(amount);
+    res.send('All budgets updated successfully');
 });
 
 app.post('/envelopes/transfer/:from/:to', (req, res) => {
@@ -69,6 +43,25 @@ app.post('/envelopes/transfer/:from/:to', (req, res) => {
     res.send('Transfer successful');
 });
 
+app.get('/envelopes/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+    const envelope = helper.getEnvelopeById(id);
+    if (!envelope) {
+        return res.status(404).send('Envelope not found');
+    }
+    res.send(envelope);
+});
+
+app.delete('/envelopes/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+    const index = helper.getIndexById(id);
+    if (index === -1) {
+        return res.status(404).send('Envelope not found');
+    }
+    envelopes.splice(index, 1);
+    res.status(204).send('Envelope deleted successfully');
+});
+
 app.put('/envelopes/:id', (req, res) => {
     const id = parseInt(req.params.id);
     const { amount } = req.body || {};
@@ -83,13 +76,20 @@ app.put('/envelopes/:id', (req, res) => {
     res.send('Budget updated successfully');
 });
 
-app.put('/envelopes/even', (req, res) => {
+app.post('/envelopes/:id/withdraw', (req, res) => {
+    const id = parseInt(req.params.id);
     const { amount } = req.body || {};
+
+    if (!helper.getEnvelopeById(id)) {
+        return res.status(404).send('Envelope not found');
+    }
+
     if (amount <= 0) {
         return res.status(400).send('Invalid amount');
     }
-    helper.evenBudget(amount);
-    res.send('All budgets updated successfully');
+
+    helper.updateBudget(id, amount);
+    res.send('Withdrawal successful');
 });
 
 module.exports = app;
